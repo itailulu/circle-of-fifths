@@ -330,11 +330,11 @@
                 majorSpan.innerHTML = key.major.replace(' / ', '<span class="text-lg sm:text-xl opacity-90 mx-0.5">/</span>');
 
                 const minorSpan = document.createElement('div');
-                minorSpan.className = 'text-[10px] sm:text-xs font-bold opacity-90 mt-1 leading-tight text-center drop-shadow-sm';
+                minorSpan.className = 'text-[10px] sm:text-xs font-bold opacity-90 mt-2 leading-tight text-center drop-shadow-sm';
                 minorSpan.innerHTML = key.minor.replace(' / ', '<br/>');
 
                 const romanNumeralSpan = document.createElement('div');
-                romanNumeralSpan.className = 'text-[8px] sm:text-[9px] font-bold opacity-75 mt-0.5 leading-tight text-center drop-shadow-sm text-gray-600';
+                romanNumeralSpan.className = 'text-sm sm:text-base font-bold opacity-75 mt-0.5 leading-tight text-center drop-shadow-sm text-gray-600';
                 romanNumeralSpan.textContent = '';
                 romanNumeralElements.push(romanNumeralSpan);
 
