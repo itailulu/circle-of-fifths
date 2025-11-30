@@ -55,6 +55,7 @@
             transform-origin: 0% 0%;
             clip-path: polygon(0% 0%, 100% 0%, 100% 60%, 0% 0%); 
             display: block;
+            background-color: #f3f4f6;
         }
 
         .key-text {
@@ -95,8 +96,8 @@
         }
 
         .center-circle {
-            width: 30%; 
-            height: 30%;
+            width: 20%; 
+            height: 20%;
             border-radius: 50%;
             background-color: #1f2937;
             color: #ffffff;
@@ -196,18 +197,18 @@
 
     <script>
         const circleData = [
-            { major: 'C', minor: 'a minor', accidentals: '0', color: 'bg-red-600' },
-            { major: 'G', minor: 'e minor', accidentals: '1#', color: 'bg-orange-500' },
-            { major: 'D', minor: 'b minor', accidentals: '2#', color: 'bg-yellow-400' },
-            { major: 'A', minor: 'f# minor', accidentals: '3#', color: 'bg-green-400' },
-            { major: 'E', minor: 'c# minor', accidentals: '4#', color: 'bg-green-600' },
-            { major: 'B / Cb', minor: 'g# / ab minor', accidentals: '5# / 7b', color: 'bg-teal-600' },
-            { major: 'Gb / F#', minor: 'eb / d# minor', accidentals: '6b / 6#', color: 'bg-cyan-600' },
-            { major: 'Db / C#', minor: 'bb / a# minor', accidentals: '5b / 7#', color: 'bg-blue-500' },
-            { major: 'Ab', minor: 'f minor', accidentals: '4b', color: 'bg-indigo-600' },
-            { major: 'Eb', minor: 'c minor', accidentals: '3b', color: 'bg-purple-600' },
-            { major: 'Bb', minor: 'g minor', accidentals: '2b', color: 'bg-fuchsia-700' },
-            { major: 'F', minor: 'd minor', accidentals: '1b', color: 'bg-pink-600' },
+            { major: 'C', minor: 'Am', accidentals: '0' },
+            { major: 'G', minor: 'Em', accidentals: '1#' },
+            { major: 'D', minor: 'Bm', accidentals: '2#' },
+            { major: 'A', minor: 'F#m', accidentals: '3#' },
+            { major: 'E', minor: 'C#m', accidentals: '4#' },
+            { major: 'B / Cb', minor: 'G#m / Abm', accidentals: '5# / 7b' },
+            { major: 'Gb / F#', minor: 'Ebm / D#m', accidentals: '6b / 6#' },
+            { major: 'Db / C#', minor: 'Bbm / A#m', accidentals: '5b / 7#' },
+            { major: 'Ab', minor: 'Fm', accidentals: '4b' },
+            { major: 'Eb', minor: 'Cm', accidentals: '3b' },
+            { major: 'Bb', minor: 'Gm', accidentals: '2b' },
+            { major: 'F', minor: 'Dm', accidentals: '1b' },
         ];
         
         const wheel = document.getElementById('circle-wheel');
@@ -216,7 +217,8 @@
         const currentKeyDisplay = document.getElementById('current-key-display');
         
         const segmentCount = 12;
-        const segmentAngle = 360 / segmentCount; 
+        const segmentAngle = 360 / segmentCount;
+        const segments = []; // Store segment elements for color updates 
         
         let currentRotation = -105; 
         let isDragging = false;
@@ -247,30 +249,43 @@
             const key = circleData[index];
             currentKeyDisplay.textContent = key.major.split(' / ')[0]; 
             
-            const getNeigh = (offset) => circleData[(index + offset + 12) % 12].major.split(' / ')[0];
-            const left = getNeigh(-1); 
-            const right = getNeigh(1); 
-            const vii = getNeigh(5);   
+            const getKey = (offset) => circleData[(index + offset + 12) % 12];
+            const leftKey = getKey(-1);
+            const rightKey = getKey(1);
+            const viiKey = getKey(5);
+            
+            const leftMajor = leftKey.major.split(' / ')[0];
+            const leftMinor = leftKey.minor.split(' / ')[0];
+            const rightMajor = rightKey.major.split(' / ')[0];
+            const rightMinor = rightKey.minor.split(' / ')[0];
+            const viiMajor = viiKey.major.split(' / ')[0];
+            const viiMinor = viiKey.minor.split(' / ')[0];
+            const currentMajor = key.major.split(' / ')[0];
+            const currentMinor = key.minor.split(' / ')[0];
             
             infoDisplay.innerHTML = `
                 <div class="flex gap-6 justify-center items-center">
-                   <div class="text-center"><div class="text-xs text-gray-400 font-bold mb-1">IV</div><div class="font-bold text-lg">${left}</div></div>
-                   <div class="text-center scale-125 mx-2"><div class="text-xs text-gray-400 font-bold mb-1">I</div><div class="font-black text-2xl text-gray-800">${key.major.split(' / ')[0]}</div></div>
-                   <div class="text-center"><div class="text-xs text-gray-400 font-bold mb-1">V</div><div class="font-bold text-lg">${right}</div></div>
-                   <div class="text-center border-l-2 pl-6 border-gray-300"><div class="text-xs text-gray-400 font-bold mb-1">vii°</div><div class="font-bold text-lg text-gray-600">${vii}</div></div>
+                   <div class="text-center"><div class="text-xs text-blue-600 font-bold mb-1">IV</div><div class="font-bold text-lg text-blue-700">${leftMajor}</div><div class="text-xs text-blue-600 font-medium">${leftMinor}</div></div>
+                   <div class="text-center scale-125 mx-2"><div class="text-xs text-red-600 font-bold mb-1">I</div><div class="font-black text-2xl text-red-700">${currentMajor}</div><div class="text-xs text-red-600 font-medium">${currentMinor}</div></div>
+                   <div class="text-center"><div class="text-xs text-green-600 font-bold mb-1">V</div><div class="font-bold text-lg text-green-700">${rightMajor}</div><div class="text-xs text-green-600 font-medium">${rightMinor}</div></div>
+                   <div class="text-center border-l-2 pl-6 border-gray-300"><div class="text-xs text-purple-600 font-bold mb-1">vii°</div><div class="font-bold text-lg text-purple-700">${viiMajor}</div><div class="text-xs text-purple-600 font-medium">${viiMinor}</div></div>
                 </div>
             `;
+            
+            updateSegmentColors();
         }
 
         function renderSegments() {
             const segmentsContainer = document.createDocumentFragment();
+            segments.length = 0; // Clear existing segments
 
             circleData.forEach((key, index) => {
                 const rotation = index * segmentAngle;
                 
                 const segment = document.createElement('div');
-                segment.className = `wheel-segment ${key.color}`;
+                segment.className = 'wheel-segment';
                 segment.style.transform = `rotate(${rotation}deg)`;
+                segments.push(segment); // Store segment reference
                 
                 const sliceCenterAngleDeg = 15;
                 const sliceCenterAngleRad = (sliceCenterAngleDeg * Math.PI) / 180;
@@ -281,7 +296,7 @@
                 const top = textRadiusPercent * Math.sin(sliceCenterAngleRad);
 
                 const textDiv = document.createElement('div');
-                textDiv.className = 'key-text text-white';
+                textDiv.className = 'key-text text-gray-800';
                 
                 textDiv.style.left = `${left}%`;
                 textDiv.style.top = `${top}%`;
@@ -293,7 +308,7 @@
 
                 const minorSpan = document.createElement('div');
                 minorSpan.className = 'text-[10px] sm:text-xs font-bold opacity-90 mt-1 leading-tight text-center drop-shadow-sm';
-                minorSpan.innerHTML = key.minor.replace(' minor', '').replace(' / ', '<br/>');
+                minorSpan.innerHTML = key.minor.replace(' / ', '<br/>');
 
                 textDiv.appendChild(majorSpan);
                 textDiv.appendChild(minorSpan);
@@ -303,6 +318,30 @@
             });
             
             wheel.appendChild(segmentsContainer);
+        }
+
+        function updateSegmentColors() {
+            let normalizedRot = currentRotation % 360;
+            if (normalizedRot < 0) normalizedRot += 360;
+            
+            let targetLocalAngle = 270 - normalizedRot - 15;
+            targetLocalAngle = (targetLocalAngle % 360 + 360) % 360;
+            let index = Math.round(targetLocalAngle / 30) % 12;
+
+            // Reset all segments to default color
+            segments.forEach(segment => {
+                segment.style.backgroundColor = '#f3f4f6';
+            });
+
+            // Apply colors based on position (very light tints)
+            // I (tonic) - Red
+            segments[index].style.backgroundColor = '#fee2e2'; // red-100
+            // IV (subdominant) - Blue
+            segments[(index - 1 + 12) % 12].style.backgroundColor = '#dbeafe'; // blue-100
+            // V (dominant) - Green
+            segments[(index + 1) % 12].style.backgroundColor = '#dcfce7'; // green-100
+            // vii° (leading tone) - Purple
+            segments[(index + 5) % 12].style.backgroundColor = '#f3e8ff'; // purple-100
         }
 
         function handleStart(clientX, clientY) {
