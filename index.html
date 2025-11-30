@@ -218,7 +218,8 @@
         
         const segmentCount = 12;
         const segmentAngle = 360 / segmentCount;
-        const segments = []; // Store segment elements for color updates 
+        const segments = []; // Store segment elements for color updates
+        const romanNumeralElements = []; // Store Roman numeral elements for updates 
         
         let currentRotation = -105; 
         let isDragging = false;
@@ -236,6 +237,16 @@
             const dy = y - center.y;
             let angle = Math.atan2(dy, dx) * (180 / Math.PI);
             return (angle >= 0 ? angle : angle + 360);
+        }
+
+        function getRomanNumeral(segmentIndex, currentKeyIndex) {
+            const relativePosition = (segmentIndex - currentKeyIndex + 12) % 12;
+            const romanNumerals = {
+                2: 'ii',
+                3: 'vi',
+                4: 'iii'
+            };
+            return romanNumerals[relativePosition] || '';
         }
 
         function updateKeyDisplay() {
@@ -272,12 +283,24 @@
                 </div>
             `;
             
+            // Update Roman numerals in segments (based on minor chord position)
+            romanNumeralElements.forEach((element, segmentIndex) => {
+                if (element) {
+                    // Minor chord is 3 positions clockwise from major in circle of fifths
+                    const minorChordIndex = (segmentIndex + 3) % 12;
+                    const roman = getRomanNumeral(minorChordIndex, index);
+                    element.textContent = roman;
+                    element.style.display = roman ? 'block' : 'none';
+                }
+            });
+            
             updateSegmentColors();
         }
 
         function renderSegments() {
             const segmentsContainer = document.createDocumentFragment();
             segments.length = 0; // Clear existing segments
+            romanNumeralElements.length = 0; // Clear existing Roman numeral elements
 
             circleData.forEach((key, index) => {
                 const rotation = index * segmentAngle;
@@ -310,8 +333,14 @@
                 minorSpan.className = 'text-[10px] sm:text-xs font-bold opacity-90 mt-1 leading-tight text-center drop-shadow-sm';
                 minorSpan.innerHTML = key.minor.replace(' / ', '<br/>');
 
+                const romanNumeralSpan = document.createElement('div');
+                romanNumeralSpan.className = 'text-[8px] sm:text-[9px] font-bold opacity-75 mt-0.5 leading-tight text-center drop-shadow-sm text-gray-600';
+                romanNumeralSpan.textContent = '';
+                romanNumeralElements.push(romanNumeralSpan);
+
                 textDiv.appendChild(majorSpan);
                 textDiv.appendChild(minorSpan);
+                textDiv.appendChild(romanNumeralSpan);
                 
                 segment.appendChild(textDiv);
                 segmentsContainer.appendChild(segment);
